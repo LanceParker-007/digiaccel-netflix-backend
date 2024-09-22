@@ -37,23 +37,24 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
-  console.log("here 1");
-
   if (!email || !password) {
-    res
+    return res
       .status(400)
       .json({ success: false, message: "Email and password are required!" });
   }
 
-  console.log("here 2");
   try {
-    console.log("here 3");
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).exec();
 
-    console.log("here 4");
+    if (!user) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid email or password" });
+    }
 
-    if (user && (await user.matchPassword(password))) {
-      console.log("here 5");
+    const isMatch = await user.matchPassword(password);
+
+    if (isMatch) {
       res.status(200).json({
         success: true,
         _id: user._id,
@@ -62,14 +63,12 @@ export const loginUser = async (req, res) => {
         token: generateToken(user._id),
       });
     } else {
-      console.log("here 6");
       res
         .status(401)
         .json({ success: false, message: "Invalid email or password" });
     }
-    console.log("here 7");
   } catch (error) {
-    console.log("here 8");
+    console.error("Login error:", error);
     res
       .status(500)
       .json({ success: false, message: "Server error, Error in login user!" });
