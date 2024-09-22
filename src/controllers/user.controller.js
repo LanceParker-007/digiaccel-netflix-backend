@@ -37,24 +37,18 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
+  console.log("here 1");
+
   if (!email || !password) {
-    return res
+    res
       .status(400)
       .json({ success: false, message: "Email and password are required!" });
   }
 
   try {
-    const user = await User.findOne({ email }).exec();
+    const user = await User.findOne({ email });
 
-    if (!user) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid email or password" });
-    }
-
-    const isMatch = await user.matchPassword(password);
-
-    if (isMatch) {
+    if (user && (await user.matchPassword(password))) {
       res.status(200).json({
         success: true,
         _id: user._id,
@@ -68,7 +62,6 @@ export const loginUser = async (req, res) => {
         .json({ success: false, message: "Invalid email or password" });
     }
   } catch (error) {
-    console.error("Login error:", error);
     res
       .status(500)
       .json({ success: false, message: "Server error, Error in login user!" });
