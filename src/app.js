@@ -14,6 +14,11 @@ app.use(cors(corsOptions));
 // Middleware
 app.use(express.json());
 
+// testing route
+app.get("/", (req, res) => {
+  res.send("Server is up and running!");
+});
+
 // Routes
 app.use("/api/v1/user", userRouter);
 
