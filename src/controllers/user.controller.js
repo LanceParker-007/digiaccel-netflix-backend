@@ -144,7 +144,7 @@ export const addMovieToFavourites = async (req, res) => {
   }
 };
 
-// Remove movie from user's favourite movies list
+// Remove movie from favourite movies list
 export const removeMovieFromFavourites = async (req, res) => {
   const { id } = req.body; // Movie ID from frontend
 
