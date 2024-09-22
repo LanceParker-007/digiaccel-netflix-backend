@@ -114,7 +114,9 @@ export const addMovieToFavourites = async (req, res) => {
     }
 
     // Check if the movie is already in the user's favorites
-    const movieExists = user.favouriteMovies.some((movie) => movie.id === id);
+    const movieExists = user.favouriteMovies.some(
+      (movie) => movie.id.toString() === id.toString()
+    );
 
     if (movieExists) {
       return res.status(400).json({
@@ -166,7 +168,7 @@ export const removeMovieFromFavourites = async (req, res) => {
 
     // Remove the movie from the user's favouriteMovies array
     user.favouriteMovies = user.favouriteMovies.filter(
-      (movie) => movie.id !== id
+      (movie) => movie.id.toString() !== id.toString()
     );
 
     // Save the updated user
